@@ -96,12 +96,38 @@ KikChat.prototype.stopUpdates = function (opts, cb) {
   throw new Error('TODO', opts, cb)
 }
 
+/**
+ * Sends a message to a single recipient. Note that the message may be any of several different types.
+ *
+ * Message types:
+ * - text A simple text message.
+ * - link A message containing a url to an arbitrary web address. May also be a Kik.js enabled webpage.
+ * - picture A message containing a url to an image.
+ * - video A message containing a url to a video, as well as some playback configurations.
+ * - app-link A message that is delivered to your webhook when a user performs the link action on a Kik.js-enabled webpage.
+ * - viral A message that is delivered to your webhook when a user performs a viral action on a Kik.js-enabled webpage.
+ * - sticker A message containing information required to display a sticker.  native-platform Y N A message containing an appId that links to another native application.
+ * - is-typing A message to indicate that the sender is in the process of typing a message. You dont have to explicitly send these messages. The typeTime parameter is provided as a shortcut to avoid sending these. See Text for more information.
+ * - delivery-receipt A message to indicate that you have received a message from a user.
+ * - push-receipt A message to indicate that a user has received the push notification for a message.
+ * - read-receipt A message to indicate that a user has read a message that you sent them.
+ *
+ * @param {Object} message
+ * @param {Function} cb
+ */
 KikChat.prototype.sendMessage = function (message, cb) {
   var self = this
 
   self.sendMessages([ message ], cb)
 }
 
+/**
+ * Sends multiple messages.
+ * @see KikChat#sendMessage for details on individual message parameters.
+ *
+ * @param {Array<Object>} messages
+ * @param {Function} cb
+ */
 KikChat.prototype.sendMessages = function (messages, cb) {
   var self = this
 
@@ -127,22 +153,9 @@ KikChat.prototype.sendMessages = function (messages, cb) {
   self._post('/message', { messages: messages }, cb)
 }
 
-KikChat.prototype.subscribe = function (opts, cb) {
-  var self = this
-
-  if (!(opts.payload && opts.username && opts.host)) {
-    throw new Error('KikChat.subscribe invalid params')
-  }
-
-  self._post('/subscribe', opts, cb)
-}
-
-KikChat.prototype.unsubscribe = function (usernames, cb) {
-  usernames = Array.isArray(usernames) ? usernames : [ usernames ]
-
-  throw new Error('TODO', cb)
-}
-
+/**
+ * Shuts down this client and invalidates it from further use.
+ */
 KikChat.prototype.destroy = function (cb) {
   process.nextTick(cb)
 }
@@ -211,4 +224,26 @@ KikChat.prototype._post = function (endpoint, params, cb) {
       contentTypeWrapper(err, body)
     }
   })
+}
+
+/**
+ * @deprecated
+ */
+KikChat.prototype.subscribe = function (opts, cb) {
+  var self = this
+
+  if (!(opts.payload && opts.username && opts.host)) {
+    throw new Error('KikChat.subscribe invalid params')
+  }
+
+  self._post('/subscribe', opts, cb)
+}
+
+/**
+ * @deprecated
+ */
+KikChat.prototype.unsubscribe = function (usernames, cb) {
+  usernames = Array.isArray(usernames) ? usernames : [ usernames ]
+
+  throw new Error('TODO', cb)
 }
