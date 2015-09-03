@@ -162,20 +162,20 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     form: params,
     encoding: null
   }, function (err, response, body) {
-    if (err) return cb(err, response, body)
+    if (err) return cb(err, body)
 
     var contentType = response.headers['content-type']
     var encoding = response.headers['content-encoding']
 
     function contentTypeWrapper (err, body) {
       if (err) {
-        return cb(err, response, body)
+        return cb(err, body)
       } else if (contentType.indexOf('application/json') >= 0) {
-        return cb(err, response, StringUtils.tryParseJSON(body.toString()))
+        return cb(err, StringUtils.tryParseJSON(body.toString()))
       } else if (contentType.indexOf('text/plain') >= 0) {
-        return cb(err, response, body.toString())
+        return cb(err, body.toString())
       } else {
-        return cb(err, response, body)
+        return cb(err, body)
       }
     }
 
