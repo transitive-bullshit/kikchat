@@ -117,13 +117,14 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     throw new Error('KikChat._post requires signin')
   }
 
+  var auth = self._username + ':' + self._apiToken
   var headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 
   request.post({
     url: self.baseURL + endpoint,
-    auth: self._username + ':' + self._apiToken,
+    auth: new Buffer(auth).toString('base64'),
     headers: headers,
     form: params,
     encoding: null
