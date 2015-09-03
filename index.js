@@ -2,10 +2,7 @@ module.exports = KikChat
 
 // external
 var debug = require('debug')('kikchat')
-
-// utilities
-var constants = require('./lib/constants')
-var Request = require('./lib/request')
+var request = require('request')
 
 /**
  * KikChat Client
