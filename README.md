@@ -64,6 +64,11 @@ DEBUG=kikchat,kikchat:*; # debug all kikchat submodules
 <tr><th align="left">Travis Fischer</th><td><a href="https://github.com/fisch0920">GitHub/fisch0920</a></td><td><a href="http://twitter.com/fisch0920">Twitter/@fisch0920</a></td></tr>
 </tbody></table>
 
+### Links
+
+- [Kik Chrome Developer Plugin](https://chrome.google.com/webstore/detail/kik-developer-tools/occbnccdhakfaomkhhdkmmknjbghmllm)
+- [Public Kik API Reference](http://dev.kik.com/docs) (different than the Kik Chat API).
+
 ### License
 
 MIT. Copyright (c) [Travis Fischer](https://makesnaps.com).

@@ -2,6 +2,7 @@
   "name": "kikchat",
   "description": "NodeJS client for the Kik Chat API",
   "version": "0.0.1",
+  "private": true,
   "author": {
     "name": "Travis Fischer",
     "email": "travis@makesnaps.com",
