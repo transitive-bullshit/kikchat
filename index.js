@@ -183,7 +183,7 @@ KikChat.prototype._post = function (endpoint, params, cb) {
             response.statusMessage,
             endpoint,
             response.request.headers,
-            response.request.body.toString().substr(0, 300),
+            (response.request.body || '').toString().substr(0, 300),
             (body || '').toString().substr(0, 300))
 
       return cb('KikChat API error ' + response.statusCode + ' (' + response.statusMessage + ')', (body || '').toString())
