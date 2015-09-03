@@ -95,18 +95,51 @@ KikChat.prototype.stopUpdates = function (opts, cb) {
   throw new Error('TODO', opts, cb)
 }
 
-KikChat.prototype.subscribe = function (payload, username, host, cb) {
+KikChat.prototype.sendMessage = function (message, cb) {
   var self = this
 
-  if (!(payload && username && host)) {
+  self.sendMessages([ message ], cb)
+}
+
+KikChat.prototype.sendMessages = function (messages, cb) {
+  var self = this
+
+  // validate each message
+  messages.forEach(function (message) {
+    if (!message.type) {
+      throw new Error('message is missing required \'type\' field')
+    }
+
+    if (!message.to) {
+      throw new Error('message is missing required \'to\' field')
+    }
+
+    if (message.type === 'text' && !message.body) {
+      throw new Error('message of type text is missing required \'body\' field')
+    }
+  })
+
+  self._post('/message', { messages: messages }, cb)
+}
+
+KikChat.prototype.subscribe = function (opts, cb) {
+  var self = this
+
+  if (!(opts.payload && opts.username && opts.host)) {
     throw new Error('KikChat.subscribe invalid params')
   }
 
-  self._post('/subscribe', {
-    payload: payload,
-    username: username,
-    host: host
-  }, cb)
+  self._post('/subscribe', opts, cb)
+}
+
+KikChat.prototype.unsubscribe = function (usernames, cb) {
+  usernames = Array.isArray(usernames) ? usernames : [ usernames ]
+
+  throw new Error('TODO', cb)
+}
+
+KikChat.prototype.destroy = function (cb) {
+  process.nextTick(cb)
 }
 
 KikChat.prototype._post = function (endpoint, params, cb) {
