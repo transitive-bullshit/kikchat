@@ -4,6 +4,7 @@ var debug = require('debug')('kikchat')
 var request = require('request')
 var zlib = require('zlib')
 var uuid = require('node-uuid')
+var qs = require('querystring')
 
 var StringUtils = require('./lib/string-utils')
 
@@ -168,21 +169,48 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     throw new Error('KikChat._post requires signin')
   }
 
-  var auth = self._username + ':' + self._apiToken
-  var headers = {
-    'Authorization': 'Basic ' + new Buffer(auth).toString('base64')
-  }
-
   var opts = {
     url: self.baseURL + endpoint,
-    headers: headers,
+    auth: {
+      username: self._username,
+      password: self._apiToken
+    },
     json: params,
     encoding: null
   }
 
-  //opts.form = params
+  request.post(opts, httpResponseWrapper(endpoint, cb))
+}
 
-  request.post(opts, function (err, response, body) {
+KikChat.prototype._get = function (endpoint, params, cb) {
+  var self = this
+  debug('KikChat._get %s %j', endpoint, params)
+
+  if (!self.isSignedIn) {
+    throw new Error('KikChat._get requires signin')
+  }
+
+  if (typeof params === 'function') {
+    cb = params
+    params = null
+  }
+
+  var query = (params ? '?' + qs.stringify(params) : '')
+
+  var opts = {
+    url: self.baseURL + endpoint + query,
+    auth: {
+      username: self._username,
+      password: self._apiToken
+    },
+    encoding: null
+  }
+
+  request.get(opts, httpResponseWrapper(endpoint, cb))
+}
+
+function httpResponseWrapper (endpoint, cb) {
+  return function (err, response, body) {
     if (err) return cb(err, body)
 
     if (response && (response.statusCode < 200 || response.statusCode >= 300)) {
@@ -223,27 +251,5 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     } else {
       contentTypeWrapper(err, body)
     }
-  })
-}
-
-/**
- * @deprecated
- */
-KikChat.prototype.subscribe = function (opts, cb) {
-  var self = this
-
-  if (!(opts.payload && opts.username && opts.host)) {
-    throw new Error('KikChat.subscribe invalid params')
   }
-
-  self._post('/subscribe', opts, cb)
-}
-
-/**
- * @deprecated
- */
-KikChat.prototype.unsubscribe = function (usernames, cb) {
-  usernames = Array.isArray(usernames) ? usernames : [ usernames ]
-
-  throw new Error('TODO', cb)
 }
