@@ -119,12 +119,12 @@ KikChat.prototype._post = function (endpoint, params, cb) {
 
   var auth = self._username + ':' + self._apiToken
   var headers = {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Basic ' + new Buffer(auth).toString('base64')
   }
 
   request.post({
     url: self.baseURL + endpoint,
-    auth: new Buffer(auth).toString('base64'),
     headers: headers,
     form: params,
     encoding: null
