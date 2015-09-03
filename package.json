@@ -8,7 +8,7 @@
     "url": "https://makesnaps.com"
   },
   "bugs": {
-    "url": "https://github.com/SeshApp/kikchat/issues"
+    "url": "https://github.com/SnapsApp/kikchat/issues"
   },
   "dependencies": {
     "async": "^1.4.2",
@@ -37,7 +37,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/SeshApp/kikchat.git"
+    "url": "git://github.com/SnapsApp/kikchat.git"
   },
   "scripts": {
     "docs": "node ./node_modules/jsdoc/jsdoc.js -c .jsdoc.json -R README.md",
