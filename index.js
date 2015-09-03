@@ -88,11 +88,25 @@ KikChat.prototype.signIn = function (username, apiKey, cb) {
 }
 
 KikChat.prototype.startUpdatesWebhook = function (opts, cb) {
-  var self = this
+  throw new Error('TODO', opts, cb)
 }
 
 KikChat.prototype.stopUpdates = function (opts, cb) {
+  throw new Error('TODO', opts, cb)
+}
+
+KikChat.prototype.subscribe = function (payload, username, host, cb) {
   var self = this
+
+  if (!(payload && username && host)) {
+    throw new Error('KikChat.subscribe invalid params')
+  }
+
+  self._post('/subscribe', {
+    payload: payload,
+    username: username,
+    host: host
+  }, cb)
 }
 
 KikChat.prototype._post = function (endpoint, params, cb) {
