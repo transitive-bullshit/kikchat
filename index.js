@@ -1,8 +1,10 @@
 module.exports = KikChat
 
-// external
 var debug = require('debug')('kikchat')
 var request = require('request')
+var zlib = require('zlib')
+
+var StringUtils = require('./lib/string-utils')
 
 /**
  * KikChat Client
@@ -38,23 +40,23 @@ Object.defineProperty(KikChat.prototype, 'username', {
  * @property {boolean}
  */
 Object.defineProperty(KikChat.prototype, 'isSignedIn', {
-  get: function () { return this._username && this._apiToken }
+  get: function () { return this._username && this._apiKey }
 })
 
 /**
  * Kik developer API key associated with the active user.
  *
- * @name KikChat#apiToken
+ * @name KikChat#apiKey
  * @property {string}
  */
-Object.defineProperty(KikChat.prototype, 'apiToken', {
-  get: function () { return this._apiToken }
+Object.defineProperty(KikChat.prototype, 'apiKey', {
+  get: function () { return this._apiKey }
 })
 
 /**
  * Signs into KikChat.
  *
- * Note that username and apiToken are optional only if their environment
+ * Note that username and apiKey are optional only if their environment
  * variable equivalents exist. E.g.,
  *
  * KIKCHAT_USERNAME
@@ -78,4 +80,67 @@ KikChat.prototype.signIn = function (username, apiKey, cb) {
   }
 
   debug('KikChat.signIn (username %s)', username)
+
+  self._username = username
+  self._apiKey = apiKey
+
+  process.nextTick(cb)
+}
+
+KikChat.prototype.startUpdatesWebhook = function (opts, cb) {
+  var self = this
+}
+
+KikChat.prototype.stopUpdates = function (opts, cb) {
+  var self = this
+}
+
+KikChat.prototype._post = function (endpoint, params, cb) {
+  var self = this
+  debug('KikChat._post %s %j', endpoint, params)
+
+  if (!self.isSignedIn) {
+    throw new Error('KikChat._post requires signin')
+  }
+
+  var headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+
+  request.post({
+    url: self.baseURL + endpoint,
+    auth: self._username + ':' + self._apiToken,
+    headers: headers,
+    form: params,
+    encoding: null
+  }, function (err, response, body) {
+    if (err) return cb(err, response, body)
+
+    var contentType = response.headers['content-type']
+    var encoding = response.headers['content-encoding']
+
+    function contentTypeWrapper (err, body) {
+      if (err) {
+        return cb(err, response, body)
+      } else if (contentType.indexOf('application/json') >= 0) {
+        return cb(err, response, StringUtils.tryParseJSON(body.toString()))
+      } else if (contentType.indexOf('text/plain') >= 0) {
+        return cb(err, response, body.toString())
+      } else {
+        return cb(err, response, body)
+      }
+    }
+
+    if (encoding === 'gzip') {
+      zlib.gunzip(body, function (err, dezipped) {
+        contentTypeWrapper(err, dezipped && dezipped.toString())
+      })
+    } else if (encoding === 'deflate') {
+      zlib.inflate(body, function (err, decoded) {
+        contentTypeWrapper(err, decoded && decoded.toString())
+      })
+    } else {
+      contentTypeWrapper(err, body)
+    }
+  })
 }
