@@ -3,6 +3,7 @@ module.exports = KikChat
 var debug = require('debug')('kikchat')
 var request = require('request')
 var zlib = require('zlib')
+var uuid = require('node-uuid')
 
 var StringUtils = require('./lib/string-utils')
 
@@ -117,6 +118,10 @@ KikChat.prototype.sendMessages = function (messages, cb) {
     if (message.type === 'text' && !message.body) {
       throw new Error('message of type text is missing required \'body\' field')
     }
+
+    if (!message.id) {
+      message.id = uuid.v4()
+    }
   })
 
   self._post('/message', { messages: messages }, cb)
@@ -152,17 +157,28 @@ KikChat.prototype._post = function (endpoint, params, cb) {
 
   var auth = self._username + ':' + self._apiToken
   var headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
     'Authorization': 'Basic ' + new Buffer(auth).toString('base64')
   }
 
   request.post({
     url: self.baseURL + endpoint,
     headers: headers,
-    form: params,
+    json: params,
     encoding: null
   }, function (err, response, body) {
     if (err) return cb(err, body)
+
+    if (response && (response.statusCode < 200 || response.statusCode >= 300)) {
+      debug('KikChat._post error: %d (%s) \nendpoint: %s \nheaders: %j \nrequest: %s\nresponse: %s',
+            response.statusCode,
+            response.statusMessage,
+            endpoint,
+            response.request.headers,
+            response.request.body.toString().substr(0, 300),
+            (body || '').toString().substr(0, 300))
+
+      return cb('KikChat API error ' + response.statusCode + ' (' + response.statusMessage + ')', (body || '').toString())
+    }
 
     var contentType = response.headers['content-type']
     var encoding = response.headers['content-encoding']
