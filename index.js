@@ -36,16 +36,6 @@ Object.defineProperty(KikChat.prototype, 'username', {
 })
 
 /**
- * Whether or not this client is signed in.
- *
- * @name KikChat#isSignedIn
- * @property {boolean}
- */
-Object.defineProperty(KikChat.prototype, 'isSignedIn', {
-  get: function () { return this._username && this._apiKey }
-})
-
-/**
  * Kik developer API key associated with the active user.
  *
  * @name KikChat#apiKey
@@ -53,6 +43,16 @@ Object.defineProperty(KikChat.prototype, 'isSignedIn', {
  */
 Object.defineProperty(KikChat.prototype, 'apiKey', {
   get: function () { return this._apiKey }
+})
+
+/**
+ * Whether or not this client is signed in.
+ *
+ * @name KikChat#isSignedIn
+ * @property {boolean}
+ */
+Object.defineProperty(KikChat.prototype, 'isSignedIn', {
+  get: function () { return this._username && this._apiKey }
 })
 
 /**
@@ -169,7 +169,7 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     throw new Error('KikChat._post requires signin')
   }
 
-  var opts = {
+  request.post({
     url: self.baseURL + endpoint,
     auth: {
       username: self._username,
@@ -177,9 +177,7 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     },
     json: params,
     encoding: null
-  }
-
-  request.post(opts, httpResponseWrapper(endpoint, cb))
+  }, httpResponseWrapper(endpoint, cb))
 }
 
 KikChat.prototype._get = function (endpoint, params, cb) {
@@ -197,16 +195,14 @@ KikChat.prototype._get = function (endpoint, params, cb) {
 
   var query = (params ? '?' + qs.stringify(params) : '')
 
-  var opts = {
+  request.get({
     url: self.baseURL + endpoint + query,
     auth: {
       username: self._username,
       password: self._apiToken
     },
     encoding: null
-  }
-
-  request.get(opts, httpResponseWrapper(endpoint, cb))
+  }, httpResponseWrapper(endpoint, cb))
 }
 
 function httpResponseWrapper (endpoint, cb) {
@@ -214,7 +210,7 @@ function httpResponseWrapper (endpoint, cb) {
     if (err) return cb(err, body)
 
     if (response && (response.statusCode < 200 || response.statusCode >= 300)) {
-      debug('KikChat._post error: %d (%s) \nendpoint: %s \nheaders: %j \nrequest: %s\nresponse: %s',
+      debug('KikChat API error: %d (%s) \nendpoint: %s \nheaders: %j \nrequest: %s\nresponse: %s',
             response.statusCode,
             response.statusMessage,
             endpoint,
