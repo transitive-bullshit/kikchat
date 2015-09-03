@@ -171,7 +171,7 @@ KikChat.prototype._post = function (endpoint, params, cb) {
   if (endpoint === '/message') {
     opts.json = params
   } else {
-    opts.params = params
+    opts.form = params
   }
 
   request.post(opts, function (err, response, body) {
