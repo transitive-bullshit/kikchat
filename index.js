@@ -163,16 +163,11 @@ KikChat.prototype._post = function (endpoint, params, cb) {
   var opts = {
     url: self.baseURL + endpoint,
     headers: headers,
+    json: params,
     encoding: null
   }
 
-  // note: having an api which expects different JSON content-types for
-  // different endpoints is pure insanity...
-  if (endpoint === '/message') {
-    opts.json = params
-  } else {
-    opts.form = params
-  }
+  //opts.form = params
 
   request.post(opts, function (err, response, body) {
     if (err) return cb(err, body)
