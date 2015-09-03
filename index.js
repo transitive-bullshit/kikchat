@@ -160,12 +160,21 @@ KikChat.prototype._post = function (endpoint, params, cb) {
     'Authorization': 'Basic ' + new Buffer(auth).toString('base64')
   }
 
-  request.post({
+  var opts = {
     url: self.baseURL + endpoint,
     headers: headers,
-    json: params,
     encoding: null
-  }, function (err, response, body) {
+  }
+
+  // note: having an api which expects different JSON content-types for
+  // different endpoints is pure insanity...
+  if (endpoint === '/message') {
+    opts.json = params
+  } else {
+    opts.params = params
+  }
+
+  request.post(opts, function (err, response, body) {
     if (err) return cb(err, body)
 
     if (response && (response.statusCode < 200 || response.statusCode >= 300)) {
