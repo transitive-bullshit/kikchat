@@ -1,6 +1,6 @@
 # kikchat
 
-### Nodejs client for the Kik Chat API
+### NodeJS client for the Kik Chat API
 
 This project provides an easy-to-use client interface to Kik's chat API, allowing Javascript developers to script Kik bots. Note that currently the Kik Chat API is in private beta testing for preferred Kik developer partners only.
 
@@ -63,8 +63,6 @@ DEBUG=kikchat,kikchat:*; # debug all kikchat submodules
 <table><tbody>
 <tr><th align="left">Travis Fischer</th><td><a href="https://github.com/fisch0920">GitHub/fisch0920</a></td><td><a href="http://twitter.com/fisch0920">Twitter/@fisch0920</a></td></tr>
 </tbody></table>
-
-### Todo
 
 ### License
 

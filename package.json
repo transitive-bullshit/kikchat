@@ -1,6 +1,6 @@
 {
   "name": "kikchat",
-  "description": "Nodejs client for the Kik Chat API",
+  "description": "NodeJS client for the Kik Chat API",
   "version": "0.0.1",
   "author": {
     "name": "Travis Fischer",
