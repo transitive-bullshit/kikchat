@@ -55,7 +55,7 @@ See [CONTRIBUTING](https://github.com/fisch0920/kikchat/blob/master/CONTRIBUTING
 You can enable [debug](https://www.npmjs.com/package/debug) logs by setting the `DEBUG` environment variable:
 
 ```bash
-DEBUG=kikchat,kikchat:*; # debug all kikchat submodules
+DEBUG=kikchat;
 ```
 
 ### Author
