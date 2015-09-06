@@ -48,7 +48,7 @@ client.signIn('myusername', 'mytoken', function (err, session) {
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
-See [CONTRIBUTING](https://github.com/SnapsApp/kikchat/blob/master/CONTRIBUTING.md).
+See [CONTRIBUTING](https://github.com/fisch0920/kikchat/blob/master/CONTRIBUTING.md).
 
 ### Debugging
 
@@ -71,4 +71,4 @@ DEBUG=kikchat,kikchat:*; # debug all kikchat submodules
 
 ### License
 
-MIT. Copyright (c) [Travis Fischer](https://makesnaps.com).
+MIT. Copyright (c) [Travis Fischer](https://github.com/fisch0920).
